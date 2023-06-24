@@ -16,23 +16,23 @@ const TableUser = (props) => {
     const getUsers = async (page) => {
         let res = await fetchUser(page);
         if (res && res.data && res.data) {
-            console.log(res)
+            // console.log(res);
 
             setListUser(res.data);
-            setTotalUsers(res.total)
-            setTotalPage(res.total_pages)
+            setTotalUsers(res.total);
+            setTotalPage(res.total_pages);
         }
     };
     const handlePageClick = (event) => {
-        console.log('check event: ' , event)
+        // console.log("check event: ", event);
         getUsers(+event.selected + 1);
     };
 
-    console.log(totalUsers);
+    // console.log(totalUsers);
     return (
         <>
-            <Table class="table mt-2" striped bordered hover>
-                <thead class="thead-dark">
+            <Table className="table mt-2" striped bordered hover>
+                <thead className="thead-dark">
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Email</th>
@@ -59,11 +59,11 @@ const TableUser = (props) => {
             </Table>
             <ReactPaginate
                 breakLabel="..."
-                nextLabel=" >"
+                nextLabel="🖤>"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={totalPage}
-                previousLabel="<"
+                previousLabel="<🖤"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
