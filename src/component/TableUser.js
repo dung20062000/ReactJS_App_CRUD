@@ -3,6 +3,7 @@ import Table from "react-bootstrap/Table";
 import { fetchUser } from "../service/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNewUser from "./ModalAddNewUser";
+import  ModalEditUser from "./ModalEditUser";
 
 const TableUser = (props) => {
     const [listUser, setListUser] = useState([]);
@@ -14,10 +15,20 @@ const TableUser = (props) => {
         getUsers();
     }, []);
 
-    const [isShowModalAddNew, setIsShowModalAddNew] = useState();
+    const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+    const [isShowModalEditUser, setShowModalEditUser] = useState(false);
+    const [dataUserEdit, setDataUserEdit ] = useState({});
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
+        setShowModalEditUser(false);
+    };
+
+
+    const handleEditUser = (user) => {
+        setDataUserEdit(user)
+        setShowModalEditUser(true)
+        
     };
 
     const getUsers = async (page) => {
@@ -29,14 +40,13 @@ const TableUser = (props) => {
         }
     };
     const handleUpdate = (user) => {
-        setListUser([user, ...listUser])
-    }
+        setListUser([user, ...listUser]);
+    };
 
     const handlePageClick = (event) => {
         getUsers(+event.selected + 1);
     };
 
-    
     return (
         <>
             <div>
@@ -73,7 +83,21 @@ const TableUser = (props) => {
                                     <td>{item.email}</td>
                                     <td>{item.first_name}</td>
                                     <td>{item.last_name}</td>
-                                    <td>action</td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-primary"
+                                            onClick={() => handleEditUser(item)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary mx-2"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -102,6 +126,12 @@ const TableUser = (props) => {
                 show={isShowModalAddNew}
                 handleClose={handleClose}
                 handleUpdate={handleUpdate}
+            />
+            <ModalEditUser
+                show = {isShowModalEditUser}
+                handleClose={handleClose}
+                dataUserEdit={dataUserEdit}
+                // handleUpdate={handleUpdate}
             />
         </>
     );
