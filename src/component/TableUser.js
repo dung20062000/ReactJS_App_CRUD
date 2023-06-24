@@ -12,11 +12,11 @@ const TableUser = (props) => {
 
     const getUsers = async () => {
         let res = await fetchUser();
-        if (res && res.data && res.data.data) {
-            setListUser(res.data.data);
+        if (res && res.data && res.data) {
+            setListUser(res.data);
         }
     };
-    
+
     console.log(listUser);
     return (
         <>
