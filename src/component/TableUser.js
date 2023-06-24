@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import { fetchUser } from "../service/UserService";
 import ReactPaginate from "react-paginate";
+import ModalAddNewUser from "./ModalAddNewUser";
 
 const TableUser = (props) => {
     const [listUser, setListUser] = useState([]);
@@ -13,24 +14,45 @@ const TableUser = (props) => {
         getUsers();
     }, []);
 
+    const [isShowModalAddNew, setIsShowModalAddNew] = useState();
+
+    const handleClose = () => {
+        setIsShowModalAddNew(false);
+    };
+
     const getUsers = async (page) => {
         let res = await fetchUser(page);
         if (res && res.data && res.data) {
-            // console.log(res);
-
             setListUser(res.data);
             setTotalUsers(res.total);
             setTotalPage(res.total_pages);
         }
     };
+    const handleUpdate = (user) => {
+        setListUser([user, ...listUser])
+    }
+
     const handlePageClick = (event) => {
-        // console.log("check event: ", event);
         getUsers(+event.selected + 1);
     };
 
-    // console.log(totalUsers);
+    
     return (
         <>
+            <div>
+                <div className="my-3 text-uppercase text-center title">
+                    List User{" "}
+                </div>
+                <div>
+                    <button
+                        type="button"
+                        className="btn btn-primary my-3"
+                        onClick={() => setIsShowModalAddNew(true)}
+                    >
+                        Add New User +
+                    </button>
+                </div>
+            </div>
             <Table className="table mt-2" striped bordered hover>
                 <thead className="thead-dark">
                     <tr>
@@ -75,6 +97,11 @@ const TableUser = (props) => {
                 containerClassName="pagination"
                 activeClassName="active"
                 renderOnZeroPageCount={null}
+            />
+            <ModalAddNewUser
+                show={isShowModalAddNew}
+                handleClose={handleClose}
+                handleUpdate={handleUpdate}
             />
         </>
     );
