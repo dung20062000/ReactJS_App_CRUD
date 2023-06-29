@@ -1,0 +1,13 @@
+.sort-header {
+    display: flex;
+    justify-content: space-between;
+
+    div {
+        
+        i{
+            padding: 0 3px;
+            cursor: pointer;
+            padding-top: 2px;
+        }
+    }
+}
