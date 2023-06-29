@@ -3,7 +3,8 @@ import Table from "react-bootstrap/Table";
 import { fetchUser } from "../service/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNewUser from "./ModalAddNewUser";
-import  ModalEditUser from "./ModalEditUser";
+import ModalEditUser from "./ModalEditUser";
+import _ from "lodash"
 
 const TableUser = (props) => {
     const [listUser, setListUser] = useState([]);
@@ -17,18 +18,16 @@ const TableUser = (props) => {
 
     const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
     const [isShowModalEditUser, setShowModalEditUser] = useState(false);
-    const [dataUserEdit, setDataUserEdit ] = useState({});
+    const [dataUserEdit, setDataUserEdit] = useState({});
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
         setShowModalEditUser(false);
     };
 
-
     const handleEditUser = (user) => {
-        setDataUserEdit(user)
-        setShowModalEditUser(true)
-        
+        setDataUserEdit(user);
+        setShowModalEditUser(true);
     };
 
     const getUsers = async (page) => {
@@ -42,6 +41,13 @@ const TableUser = (props) => {
     const handleUpdate = (user) => {
         setListUser([user, ...listUser]);
     };
+
+    const handleEditUserFromTable = (user) => {
+        let cloneListUser = _.cloneDeep(listUser);
+        let index = listUser.findIndex(item => item.id === user.id)
+        cloneListUser[index].first_name = user.first_name
+        setListUser(cloneListUser);
+    }
 
     const handlePageClick = (event) => {
         getUsers(+event.selected + 1);
@@ -86,14 +92,14 @@ const TableUser = (props) => {
                                     <td>
                                         <button
                                             type="button"
-                                            class="btn btn-outline-primary"
+                                            className="btn btn-outline-primary"
                                             onClick={() => handleEditUser(item)}
                                         >
                                             Edit
                                         </button>
                                         <button
                                             type="button"
-                                            class="btn btn-outline-secondary mx-2"
+                                            className="btn btn-outline-secondary mx-2"
                                         >
                                             Delete
                                         </button>
@@ -128,10 +134,10 @@ const TableUser = (props) => {
                 handleUpdate={handleUpdate}
             />
             <ModalEditUser
-                show = {isShowModalEditUser}
+                show={isShowModalEditUser}
                 handleClose={handleClose}
                 dataUserEdit={dataUserEdit}
-                // handleUpdate={handleUpdate}
+                handleEditUserFromTable={handleEditUserFromTable}
             />
         </>
     );
