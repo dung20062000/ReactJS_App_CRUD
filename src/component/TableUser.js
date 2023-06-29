@@ -4,6 +4,7 @@ import { fetchUser } from "../service/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNewUser from "./ModalAddNewUser";
 import ModalEditUser from "./ModalEditUser";
+import ModalConfirm from "./ModalConfirm";
 import _ from "lodash"
 
 const TableUser = (props) => {
@@ -17,12 +18,17 @@ const TableUser = (props) => {
     }, []);
 
     const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+
     const [isShowModalEditUser, setShowModalEditUser] = useState(false);
     const [dataUserEdit, setDataUserEdit] = useState({});
+
+    const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
+    const [dataUserConfirm, setDataUserConfirm] = useState({})
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
         setShowModalEditUser(false);
+        setIsShowModalConfirm(false);
     };
 
     const handleEditUser = (user) => {
@@ -52,7 +58,15 @@ const TableUser = (props) => {
     const handlePageClick = (event) => {
         getUsers(+event.selected + 1);
     };
-
+    const handleDeleteUser = (user) => {
+        setIsShowModalConfirm(true)
+        setDataUserConfirm(user);
+    }
+    const handleDeleteUserConfirm = (user) => {
+        let cloneListUser = _.cloneDeep(listUser);
+        cloneListUser = cloneListUser.filter(item => item.id !== user.id)
+        setListUser(cloneListUser);
+    }
     return (
         <>
             <div>
@@ -98,6 +112,7 @@ const TableUser = (props) => {
                                             Edit
                                         </button>
                                         <button
+                                            onClick={() => handleDeleteUser(item)}
                                             type="button"
                                             className="btn btn-outline-secondary mx-2"
                                         >
@@ -138,6 +153,13 @@ const TableUser = (props) => {
                 handleClose={handleClose}
                 dataUserEdit={dataUserEdit}
                 handleEditUserFromTable={handleEditUserFromTable}
+            />
+            <ModalConfirm
+                show= {isShowModalConfirm}
+                handleClose={handleClose}
+                dataUserConfirm= {dataUserConfirm}
+                handleDeleteUserConfirm={handleDeleteUserConfirm}
+
             />
         </>
     );
