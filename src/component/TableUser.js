@@ -8,6 +8,7 @@ import ModalConfirm from "./ModalConfirm";
 import "./TableUser.scss";
 import { debounce } from "lodash";
 import _ from "lodash";
+import { CSVLink, CSVDownload } from "react-csv";
 
 const TableUser = (props) => {
     const [listUser, setListUser] = useState([]);
@@ -31,6 +32,7 @@ const TableUser = (props) => {
     const [sortField, setSortField] = useState("id");
 
     const [keyWord, setKeyWord] = useState("");
+    const [dataExport, setDataExport] = useState([])
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
@@ -84,16 +86,44 @@ const TableUser = (props) => {
     };
 
     const handleOnchange = debounce((event) => {
-        let term = event.target.value
-        console.log(term)
-        if(term){
+        let term = event.target.value;
+        console.log(term);
+        if (term) {
             let cloneListUser = _.cloneDeep(listUser);
-            cloneListUser = cloneListUser.filter(item => item.email.includes(term))
+            cloneListUser = cloneListUser.filter((item) =>
+                item.email.includes(term)
+            );
             setListUser(cloneListUser);
-        }else{
-            getUsers()
+        } else {
+            getUsers();
         }
-    },500)
+    }, 500);
+
+    const getUsersExport = (event, done) => {
+        let result = [];
+        if(listUser &&  listUser.length > 0) {
+            result.push(["ID", "Email", "First Name", "Last Name"])
+            listUser.map((item, index) =>{
+                let arr = []
+                arr[0] = item.id
+                arr[1] = item.email
+                arr[2] = item.first_name
+                arr[3] = item.last_name
+                result.push(arr)
+            })
+            // console.log(result)
+            setDataExport(result)
+            done()
+        }
+    }
+    console.log('check data export', dataExport)
+
+    const csvData = [
+        ["firstname", "lastname", "email"],
+        ["Ahmed", "Tomi", "ah@smthing.co.com"],
+        ["Raed", "Labes", "rl@smthing.co.com"],
+        ["Yezzi", "Min l3b", "ymin@cocococo.com"],
+    ];
     return (
         <>
             <div>
@@ -106,8 +136,22 @@ const TableUser = (props) => {
                         className="btn btn-primary my-3"
                         onClick={() => setIsShowModalAddNew(true)}
                     >
-                        Add New User +
+                        Add New User <i className="fa-solid fa-user-plus"></i>
                     </button>
+
+                    <CSVLink
+                        filename={"user-file.csv"}
+                        className="btn btn-success mx-3"
+                        data={dataExport}
+                        asyncOnClick={true}
+                        onClick={getUsersExport} 
+                    >
+                        Download file <i className="fa-solid fa-download"></i>
+                    </CSVLink>
+                    <label htmlFor="import" className="btn btn-info">
+                        <i class="fa-solid fa-file-import"></i> Import file
+                    </label>
+                    <input id="import" type="file" hidden></input>
                 </div>
                 <div className="col-4 my-3">
                     <input
