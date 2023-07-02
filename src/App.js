@@ -5,13 +5,18 @@ import Container from "react-bootstrap/Container";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Home from "./component/Home";
+import { Link, Route, Routes } from "react-router-dom";
 
 function App() {
     return (
         <>
             <Header />
             <Container>
-                <TableUser />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/users" element={<TableUser />} />
+                </Routes>
             </Container>
             <ToastContainer
                 position="top-right"

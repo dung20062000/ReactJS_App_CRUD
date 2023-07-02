@@ -135,11 +135,11 @@ const TableUser = (props) => {
                                 dataCsv[0][0] !== "email" ||
                                 dataCsv[0][1] !== "first_name" ||
                                 dataCsv[0][2] !== "last_name"
-                            ){
+                            ) {
                                 toast.error(
                                     "import failed, check header data CSV"
                                 );
-                            } else { 
+                            } else {
                                 // console.log("check for dataCsv: " ,dataCsv);
                                 let result = [];
                                 dataCsv.map((item, index) => {
@@ -195,7 +195,7 @@ const TableUser = (props) => {
                         Download file <i className="fa-solid fa-download"></i>
                     </CSVLink>
                     <label htmlFor="import" className="btn btn-info">
-                        <i class="fa-solid fa-file-import"></i> Import file
+                        <i className="fa-solid fa-file-import"></i> Import file
                     </label>
                     <input
                         id="import"
