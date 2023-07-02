@@ -9,6 +9,8 @@ import "./TableUser.scss";
 import { debounce } from "lodash";
 import _ from "lodash";
 import { CSVLink, CSVDownload } from "react-csv";
+import Papa from "papaparse";
+import { toast } from "react-toastify";
 
 const TableUser = (props) => {
     const [listUser, setListUser] = useState([]);
@@ -32,7 +34,7 @@ const TableUser = (props) => {
     const [sortField, setSortField] = useState("id");
 
     const [keyWord, setKeyWord] = useState("");
-    const [dataExport, setDataExport] = useState([])
+    const [dataExport, setDataExport] = useState([]);
 
     const handleClose = () => {
         setIsShowModalAddNew(false);
@@ -101,22 +103,66 @@ const TableUser = (props) => {
 
     const getUsersExport = (event, done) => {
         let result = [];
-        if(listUser &&  listUser.length > 0) {
-            result.push(["ID", "Email", "First Name", "Last Name"])
-            listUser.map((item, index) =>{
-                let arr = []
-                arr[0] = item.id
-                arr[1] = item.email
-                arr[2] = item.first_name
-                arr[3] = item.last_name
-                result.push(arr)
-            })
-            // console.log(result)
-            setDataExport(result)
-            done()
+        if (listUser && listUser.length > 0) {
+            result.push(["ID", "Email", "First Name", "Last Name"]);
+            listUser.map((item, index) => {
+                let arr = [];
+                arr[0] = item.id;
+                arr[1] = item.email;
+                arr[2] = item.first_name;
+                arr[3] = item.last_name;
+                result.push(arr);
+            });
+            setDataExport(result);
+            done();
         }
-    }
-    console.log('check data export', dataExport)
+    };
+
+    const handleImport = (event) => {
+        if (event.target && event.target.files && event.target.files[0]) {
+            let file = event.target.files[0];
+            if (file.type !== "text/csv") {
+                toast.error("import failed. Only csv file");
+                return;
+            }
+            Papa.parse(file, {
+                // header:  true,
+                complete: function (results) {
+                    let dataCsv = results.data;
+                    if (dataCsv.length > 0) {
+                        if (dataCsv[0] && dataCsv[0].length === 3) {
+                            if (
+                                dataCsv[0][0] !== "email" ||
+                                dataCsv[0][1] !== "first_name" ||
+                                dataCsv[0][2] !== "last_name"
+                            ){
+                                toast.error(
+                                    "import failed, check header data CSV"
+                                );
+                            } else { 
+                                // console.log("check for dataCsv: " ,dataCsv);
+                                let result = [];
+                                dataCsv.map((item, index) => {
+                                    if (index > 0 && item.length === 3) {
+                                        let obj = {};
+                                        obj.email = item[0];
+                                        obj.first_name = item[1];
+                                        obj.last_name = item[2];
+                                        result.push(obj);
+                                    }
+                                });
+                                setListUser(result);
+                            }
+                        } else {
+                            toast.error("import failed! format CSV");
+                        }
+                    } else {
+                        toast.error("import failed no data CSV");
+                    }
+                },
+            });
+        }
+    };
 
     const csvData = [
         ["firstname", "lastname", "email"],
@@ -144,14 +190,19 @@ const TableUser = (props) => {
                         className="btn btn-success mx-3"
                         data={dataExport}
                         asyncOnClick={true}
-                        onClick={getUsersExport} 
+                        onClick={getUsersExport}
                     >
                         Download file <i className="fa-solid fa-download"></i>
                     </CSVLink>
                     <label htmlFor="import" className="btn btn-info">
                         <i class="fa-solid fa-file-import"></i> Import file
                     </label>
-                    <input id="import" type="file" hidden></input>
+                    <input
+                        id="import"
+                        type="file"
+                        hidden
+                        onChange={(event) => handleImport(event)}
+                    ></input>
                 </div>
                 <div className="col-4 my-3">
                     <input
