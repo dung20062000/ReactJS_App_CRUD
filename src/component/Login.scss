@@ -1,0 +1,68 @@
+.login-container{
+    .login-body{
+        margin: 0 auto;
+        .login-content{
+            display: flex;
+            flex-direction: column;
+            .login-title{
+                text-align: center;
+                text-transform: uppercase;
+                font-size: 30px;
+                font-weight: 600;
+                margin: 15px 0;
+            }
+            .text{
+                font-size: 15px;
+                font-weight: 600;
+                margin: 10px 0;
+
+            }
+            input{
+                margin: 5px 0;
+                height: 50px;
+                width: 100%;
+                padding: 5px;
+                outline: none;
+                border-radius: 2px;
+                border: 1px solid rgba(22, 24, 35, .12) ;
+                background-color: rgba(22, 24, 35, .06);
+            }
+            .container-pass{
+                position: relative;
+                i{
+                    cursor: pointer;
+                    position: absolute;
+                    top: 20px;
+                    right: 10px;
+                }
+            }
+
+            .btn-login{
+                background-color: rgba(22, 24, 35, .06);
+                border-radius: 3px;
+                border: none;
+                outline: none;
+                padding: 10px;
+                margin-top: 20px;
+                &.active{
+                    background-color: rgb(254, 44, 85);
+                    color: #fff;
+                }
+            }
+            button[disabled=disabled], button:disabled {
+                cursor: not-allowed;
+            }
+
+            .btn-back{
+                margin-top: 20px;
+                background-color: transparent;
+                border: none;
+                outline: none;
+                i{
+                    margin-right: 10px;
+                }
+            }
+            
+        }
+    }
+}
