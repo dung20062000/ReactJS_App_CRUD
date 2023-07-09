@@ -1,16 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.scss";
+import { loginApi } from "../service/UserService"
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 const Login = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isShoePassWord, setIsShoePassWord] = useState(false);
+    const [showLoadingLogin, setShowLoadingLogin] = useState(false);
+
+    useEffect(() => {
+        let token = localStorage.getItem("token");
+        if(token) {
+            navigate("/")
+        }
+    }, [])
+
+    const handleLogin = async() => {
+        setShowLoadingLogin(true)
+        if( !email || !password ) {
+            toast.error("please check your email and password")
+            return;
+        }
+        let res = await loginApi(email, password)
+        console.log("check res: ", res)
+        if( res &&  res.token ){
+            localStorage.setItem("token", res.token)
+            navigate("/")
+        }else{
+            //error
+            if(res && res.status === 400){
+                toast.error(res.data.error)
+            }
+        }
+        setShowLoadingLogin(false)
+    }
     return (
         <>
             <div className="login-container">
                 <div className="login-body col-12 col-sm-4 ">
                     <div className="login-content">
                         <div className="login-title">Login</div>
-                        <div className="text">Email or UserName</div>
+                        <div className="text">Email or UserName (eve.holt@reqres.in)</div>
                         <input
                             type="text"
                             value={email}
@@ -26,7 +59,6 @@ const Login = () => {
                                 }
                                 placeholder="Enter password"
                             ></input>
-                            <i className="fa-solid fa-eye"></i>
                             <i 
                                 className={isShoePassWord ===true ? "fa-solid fa-eye":"fa-solid fa-eye-slash" }
                                 onClick={() => setIsShoePassWord(!isShoePassWord)}
@@ -40,12 +72,14 @@ const Login = () => {
                             }
                             disabled={email && password
                                 ? false
-                                : true}
-                        >
-                            Login
+                                : true
+                            }
+                            onClick={() => handleLogin()}
+                        >    
+                           {showLoadingLogin && <i className="fas fa-spinner fa-pulse"></i>}  Login
                         </button>
                         <button className="btn-back">
-                            <i class="fa-solid fa-chevron-left"></i>Go Back
+                            <i className="fa-solid fa-chevron-left"></i>Go Back
                         </button>
                     </div>
                 </div>
