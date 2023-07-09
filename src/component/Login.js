@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "./Login.scss";
 import { loginApi } from "../service/UserService"
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext"
 
 const Login = () => {
     const navigate = useNavigate();
@@ -11,12 +12,14 @@ const Login = () => {
     const [isShoePassWord, setIsShoePassWord] = useState(false);
     const [showLoadingLogin, setShowLoadingLogin] = useState(false);
 
-    useEffect(() => {
-        let token = localStorage.getItem("token");
-        if(token) {
-            navigate("/")
-        }
-    }, [])
+    const { loginContext } = useContext(UserContext);
+
+    // useEffect(() => {
+    //     let token = localStorage.getItem("token");
+    //     if(token) {
+    //         navigate("/")
+    //     }
+    // }, [])
 
     const handleLogin = async() => {
         setShowLoadingLogin(true)
@@ -27,7 +30,7 @@ const Login = () => {
         let res = await loginApi(email, password)
         console.log("check res: ", res)
         if( res &&  res.token ){
-            localStorage.setItem("token", res.token)
+            loginContext(email, res.token) 
             navigate("/")
         }else{
             //error
@@ -36,6 +39,9 @@ const Login = () => {
             }
         }
         setShowLoadingLogin(false)
+    }
+    const handleGoBack = () => {
+        navigate("/")
     }
     return (
         <>
@@ -79,7 +85,8 @@ const Login = () => {
                            {showLoadingLogin && <i className="fas fa-spinner fa-pulse"></i>}  Login
                         </button>
                         <button className="btn-back">
-                            <i className="fa-solid fa-chevron-left"></i>Go Back
+                            <i className="fa-solid fa-chevron-left"></i>
+                            <span onClick={() => handleGoBack() }>Go Back</span>
                         </button>
                     </div>
                 </div>

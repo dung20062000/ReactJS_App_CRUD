@@ -8,8 +8,18 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Home from "./component/Home";
 import { Link, Route, Routes } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "./context/UserContext"
 
 function App() {
+    const { user, loginContext } = useContext(UserContext);
+    console.log("check user context", user);
+
+    useEffect(() => {
+        if(localStorage.getItem("token")){
+            loginContext(localStorage.getItem("token"), localStorage.getItem("token"))
+        }
+    }, [])
     return (
         <>
             <Header />
